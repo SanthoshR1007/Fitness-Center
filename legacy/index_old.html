@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="dashTitle">Dragon Gym | Member Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #ff3e3e;
+            --secondary: #ff9d00;
+            --bg-dark: #0a0b10;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-dim: #909090;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        nav.sidebar {
+            width: 260px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--card-border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 62, 62, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(255, 62, 62, 0.2);
+        }
+
+        /* Main Content */
+        main.content {
+            flex: 1;
+            padding: 2.5rem;
+            margin-left: 260px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Dashboard Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+        }
+
+        .ai-banner {
+            background: linear-gradient(135deg, rgba(255, 62, 62, 0.15), rgba(255, 157, 0, 0.15));
+            border: 1px solid rgba(255, 62, 62, 0.2);
+            padding: 2.5rem;
+            border-radius: 30px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 62, 62, 0.2);
+        }
+
+        /* My Schedule Section */
+        .schedule-section {
+            margin-top: 3rem;
+        }
+
+        .machine-list {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .machine-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            padding: 1.2rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="logo" id="sideLogo"><i data-lucide="shield"></i> Dragon Gym</div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+                <li><a href="booking.html" class="nav-item"><i data-lucide="calendar"></i> Book Slot</a></li>
+                <li><a href="profile.html" class="nav-item"><i data-lucide="user"></i> My Profile</a></li>
+                <li><a href="login.html" class="nav-item"><i data-lucide="log-out"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <header>
+                <div>
+                    <h1 id="welcomeText">Dragon Gym Dashboard</h1>
+                    <p style="color: var(--text-dim);">Welcome back, Warrior Alex!</p>
+                </div>
+                <div style="background: var(--card-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card-border);">
+                    <span id="currentTime">12:58 PM</span>
+                </div>
+            </header>
+
+            <div class="ai-banner">
+                <div>
+                    <h2 style="margin-bottom: 0.5rem;"><i data-lucide="sparkles"></i> AI Smart Training</h2>
+                    <p style="color: var(--text-dim); max-width: 500px;">Current gym traffic is low. This is the optimal time for your session to maximize machine availability.</p>
+                </div>
+                <button class="btn-primary" onclick="location.href='booking.html'">Book New Session</button>
+            </div>
+
+            <div class="grid">
+                <!-- Slot Booked Section -->
+                <div class="card" id="bookedSlotSection">
+                    <h3><i data-lucide="check-circle" style="color: #00ff80;"></i> Slot Booked</h3>
+                    <div id="noBooking" style="margin-top: 1rem; color: var(--text-dim);">No active bookings for today.</div>
+                    <div id="bookingDetails" style="display: none; margin-top: 1.5rem;">
+                        <div style="background: rgba(255, 255, 255, 0.02); padding: 1rem; border-radius: 15px; margin-bottom: 1rem;">
+                            <p style="color: var(--text-dim); font-size: 0.8rem;">Session</p>
+                            <p style="font-weight: 700; font-size: 1.1rem;" id="dispSession">-</p>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div style="background: rgba(255, 255, 255, 0.02); padding: 1rem; border-radius: 15px;">
+                                <p style="color: var(--text-dim); font-size: 0.8rem;">Time</p>
+                                <p style="font-weight: 700;" id="dispTime">-</p>
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.02); padding: 1rem; border-radius: 15px;">
+                                <p style="color: var(--text-dim); font-size: 0.8rem;">Date</p>
+                                <p style="font-weight: 700;" id="dispDate">-</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem; text-align: center;">
+                            <span style="color: #00ff80; font-size: 0.85rem; font-weight: 600;">● Booking Confirmed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Performance Metrics</h3>
+                    <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="font-size: 0.9rem;">Weekly Goal</span>
+                                <span style="color: var(--primary);">75%</span>
+                            </div>
+                            <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px;">
+                                <div style="width: 75%; height: 100%; background: var(--primary); border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 10px;">
+                            <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 20px;">
+                                <p style="color: var(--text-dim); font-size: 0.75rem;">Calories</p>
+                                <p style="font-weight: 700;">840 kcal</p>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 20px;">
+                                <p style="color: var(--text-dim); font-size: 0.75rem;">Duration</p>
+                                <p style="font-weight: 700;">65 mins</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Schedule Page (Today Session View) -->
+            <div class="schedule-section" id="mySchedule">
+                <h3><i data-lucide="list"></i> My Today's Session</h3>
+                <p id="sessionTitle" style="color: var(--text-dim); margin-top: 0.5rem;">Book a session to see your machine routine.</p>
+                <div class="machine-list" id="routineList">
+                    <!-- Machines based on booked session -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="branding.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Booking Logic
+        const booking = JSON.parse(localStorage.getItem('currentBooking'));
+        if(booking) {
+            document.getElementById('noBooking').style.display = 'none';
+            document.getElementById('bookingDetails').style.display = 'block';
+            document.getElementById('dispSession').textContent = booking.session;
+            document.getElementById('dispTime').textContent = booking.time;
+            document.getElementById('dispDate').textContent = booking.date;
+
+            document.getElementById('sessionTitle').innerHTML = `Today's <span style="color: var(--primary); font-weight: 700;">${booking.session}</span> Routine (Assigned Machines):`;
+            
+            // Map machines for the session
+            const machinesMap = {
+                'Chest Day': ['Chest Press Machine', 'Pec Fly Machine', 'Incline Press Machine', 'Decline Press Machine'],
+                'Back Day': ['Lat Pulldown Machine', 'Seated Cable Row', 'T-Bar Row Machine', 'Assisted Pull-Up Machine'],
+                'Shoulder Day': ['Overhead Press Machine', 'Lateral Raise Machine', 'Rear Delt Fly Machine'],
+                'Leg Day': ['Leg Press Machine', 'Leg Extension Machine', 'Seated Leg Curl Machine', 'Lying Leg Curl Machine', 'Standing Calf Raise Machine', 'Seated Calf Raise Machine', 'Hip Abductor Machine', 'Hip Adductor Machine', 'Hack Squat Machine'],
+                'Arm Day': ['Bicep Curl Machine', 'Tricep Pushdown Machine'],
+                'Core Day': ['Abdominal Crunch Machine', 'Rotary Torso Machine'],
+                'Full Body': ['Chest Press', 'Lat Pulldown', 'Leg Press', 'Overhead Press']
+            };
+
+            const list = document.getElementById('routineList');
+            list.innerHTML = '';
+            (machinesMap[booking.session] || []).forEach(m => {
+                const item = document.createElement('div');
+                item.className = 'machine-item';
+                item.innerHTML = `<p style="font-weight: 600;">${m}</p><p style="font-size: 0.7rem; color: #00ff80; margin-top: 5px;">Ready</p>`;
+                list.appendChild(item);
+            });
+        }
+
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }, 1000);
+    </script>
+</body>
+
+</html>

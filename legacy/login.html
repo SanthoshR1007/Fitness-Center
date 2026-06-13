@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="loginTitle">Dragon Gym | Portal Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #ff3e3e;
+            --secondary: #ff9d00;
+            --bg-dark: #0a0b10;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-dim: #909090;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 3.5rem;
+            border-radius: 40px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 2.5rem 0;
+        }
+
+        .role-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            padding: 15px 10px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        .role-btn.active {
+            background: rgba(255, 62, 62, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        .form-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            padding: 14px 20px;
+            border-radius: 14px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(255, 62, 62, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="logo">
+            <i data-lucide="shield"></i>
+            <span id="gymTitle">Dragon Gym</span>
+        </div>
+        <p style="color: var(--text-dim);">Warrior Portal Access</p>
+
+        <div class="role-selector">
+            <button class="role-btn active" onclick="setRole('member', this)">Member</button>
+            <button class="role-btn" onclick="setRole('admin', this)">Admin</button>
+            <button class="role-btn" onclick="setRole('trainer', this)">Trainer</button>
+        </div>
+
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>Access Code / Email</label>
+                <input type="text" placeholder="Enter your credentials" required>
+            </div>
+            <div class="form-group">
+                <label>Security Key</label>
+                <input type="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-login">Enter Portal</button>
+        </form>
+    </div>
+
+    <script src="branding.js"></script>
+    <script>
+        lucide.createIcons();
+
+        let currentRole = 'member';
+
+        function setRole(role, btn) {
+            currentRole = role;
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const targetMap = {
+                'member': 'index.html',
+                'admin': 'admin.html',
+                'trainer': 'trainer.html'
+            };
+            location.href = targetMap[currentRole];
+        }
+    </script>
+</body>
+
+</html>

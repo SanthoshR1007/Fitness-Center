@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="adminTitle">Dragon Gym | Admin Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #ff3e3e; /* Dragon Red */
+            --secondary: #ff9d00; /* Dragon Gold */
+            --bg-dark: #0a0b10;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-dim: #909090;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        nav.sidebar {
+            width: 260px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--card-border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 62, 62, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(255, 62, 62, 0.2);
+        }
+
+        /* Main Content */
+        main.content {
+            flex: 1;
+            padding: 2.5rem;
+            overflow-y: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 1.5rem;
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, transparent, rgba(255, 62, 62, 0.05));
+            border-radius: 0 0 0 100%;
+        }
+
+        .stat-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .stat-lbl {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        /* Tabs/Sections */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tables & Lists */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            text-align: left;
+            color: var(--text-dim);
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-active { background: rgba(0, 255, 128, 0.1); color: #00ff80; }
+        .badge-full { background: rgba(255, 62, 62, 0.1); color: #ff3e3e; }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 62, 62, 0.3);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--bg-dark);
+            border: 1px solid var(--card-border);
+            padding: 2.5rem;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal">
+            <h2 style="margin-bottom: 1.5rem;">System Settings</h2>
+            <div class="form-group">
+                <label>Website Name</label>
+                <input type="text" id="gymNameInput" value="Dragon Gym">
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="updateGymName()">Apply Changes</button>
+            <button style="width: 100%; background: transparent; border: none; color: var(--text-dim); margin-top: 1rem; cursor: pointer;" onclick="toggleModal('settingsModal', false)">Cancel</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <i data-lucide="shield"></i>
+                <span id="sidebarName">Dragon Gym</span>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item active" onclick="switchTab('dashboard')"><i data-lucide="layout-dashboard"></i> Dashboard</li>
+                <li class="nav-item" onclick="switchTab('members')"><i data-lucide="users"></i> Members</li>
+                <li class="nav-item" onclick="switchTab('machines')"><i data-lucide="cpu"></i> Machines</li>
+                <li class="nav-item" onclick="switchTab('bookings')"><i data-lucide="calendar"></i> Bookings</li>
+                <li class="nav-item" onclick="toggleModal('settingsModal', true)"><i data-lucide="settings"></i> Settings</li>
+                <li class="nav-item" onclick="location.href='login.html'"><i data-lucide="log-out"></i> Logout</li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <header>
+                <div>
+                    <h1 id="headerName">Dragon Gym Admin</h1>
+                    <p style="color: var(--text-dim);">System status: <span style="color: #00ff80;">Optimal</span></p>
+                </div>
+                <div style="background: var(--card-bg); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--card-border);">
+                    <span id="currentTime">12:58 PM</span>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="page-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <p class="stat-lbl">Total Members</p>
+                        <p class="stat-val">1,284</p>
+                        <p style="color: #00ff80; font-size: 0.75rem;">+12 this week</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-lbl">Active Now</p>
+                        <p class="stat-val">42</p>
+                        <p style="color: var(--secondary); font-size: 0.75rem;">Peak Hours</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-lbl">Machine Usage</p>
+                        <p class="stat-val">68%</p>
+                        <p style="color: var(--primary); font-size: 0.75rem;">Heavy Load</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-lbl">Slots Booked Today</p>
+                        <p class="stat-val">156</p>
+                        <p style="color: #00ff80; font-size: 0.75rem;">85% Occupancy</p>
+                    </div>
+                </div>
+
+                <div class="grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+                    <div class="card">
+                        <h3>Traffic Density</h3>
+                        <div style="height: 300px; margin-top: 1.5rem;">
+                            <canvas id="trafficChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Slot Occupancy</h3>
+                        <div id="slotList" style="margin-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--card-border);">
+                                <span>05:00 AM - 09:00 AM</span>
+                                <span style="color: #00ff80;">12/15</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--card-border);">
+                                <span>03:00 PM - 09:00 PM</span>
+                                <span style="color: var(--primary);">15/15 (Full)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Members Section -->
+            <div id="members" class="page-section">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>Member Directory</h3>
+                        <button class="btn-primary" onclick="alert('Add Member Flow')">Add New Member</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Session</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody">
+                            <tr>
+                                <td>Alex Rivera</td>
+                                <td>alex@example.com</td>
+                                <td>Leg Day</td>
+                                <td><span class="badge badge-active">Active</span></td>
+                                <td><i data-lucide="edit" size="16"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Machines Section -->
+            <div id="machines" class="page-section">
+                <div class="card">
+                    <h3>Machine Inventory & Status</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem;">
+                        <div class="card" style="padding: 1rem; border-color: #ff3e3e; background: rgba(255, 62, 62, 0.05);">
+                            <p style="font-weight: 700;">Chest Press</p>
+                            <p style="font-size: 0.8rem; color: var(--text-dim);">Load: 3/3 members</p>
+                            <span class="badge badge-full" style="margin-top: 5px; display: inline-block;">FULL</span>
+                        </div>
+                        <div class="card" style="padding: 1rem;">
+                            <p style="font-weight: 700;">Leg Press</p>
+                            <p style="font-size: 0.8rem; color: var(--text-dim);">Load: 1/3 members</p>
+                            <span class="badge badge-active" style="margin-top: 5px; display: inline-block;">AVAILABLE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="branding.js"></script>
+    <script>
+        lucide.createIcons();
+
+        function updateGymName() {
+            const newName = document.getElementById('gymNameInput').value;
+            localStorage.setItem('gymName', newName);
+            // Trigger branding update manually for immediate feedback
+            if (typeof applyBranding === 'function') applyBranding();
+            toggleModal('settingsModal', false);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            const navItem = Array.from(document.querySelectorAll('.nav-item')).find(i => i.textContent.toLowerCase().includes(tabId));
+            if (navItem) navItem.classList.add('active');
+        }
+
+        function toggleModal(id, show) {
+            document.getElementById(id).style.display = show ? 'flex' : 'none';
+        }
+
+        // Charts
+        const ctx = document.getElementById('trafficChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['5AM', '7AM', '9AM', '11AM', '1PM', '3PM', '5PM', '7PM', '9PM'],
+                datasets: [{
+                    label: 'Member Density',
+                    data: [10, 25, 15, 8, 5, 20, 35, 42, 28],
+                    borderColor: '#ff3e3e',
+                    backgroundColor: 'rgba(255, 62, 62, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#909090' } },
+                    x: { grid: { display: false }, ticks: { color: '#909090' } }
+                }
+            }
+        });
+
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }, 1000);
+    </script>
+</body>
+
+</html>

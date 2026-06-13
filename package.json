@@ -1,0 +1,23 @@
+{
+  "name": "gym",
+  "version": "1.0.0",
+  "description": "This project provides a complete UI/UX design and system architecture for an AI-powered gym management platform.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node backend/server.js",
+    "build": "powershell -ExecutionPolicy Bypass -File ./sync.ps1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "sqlite3": "^6.0.1"
+  }
+}
