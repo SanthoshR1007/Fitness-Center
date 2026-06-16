@@ -26,7 +26,7 @@ app.use(helmet({
 // Configure strict CORS (restrict from wildcard *)
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
     ? process.env.ALLOWED_ORIGINS.split(',') 
-    : ['http://localhost:3000', 'http://localhost:5173']; // default local development origins
+    : ['http://localhost:3000', 'http://localhost:5173', 'null', 'file://', 'capacitor://localhost', 'http://localhost']; // default local development origins
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -77,8 +77,7 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1];
     
     if (!token) {
-        // Fallback for simple prototype debugging: if no token is sent, proceed as guest
-        return next();
+        return res.status(401).json({ error: "Access Denied: Missing Token" });
     }
 
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
@@ -87,6 +86,15 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
+
+// Secure all /api/ routes except login/register/config
+app.use('/api', (req, res, next) => {
+    const publicRoutes = ['/auth/login', '/auth/register', '/config'];
+    if (publicRoutes.some(route => req.path.startsWith(route))) {
+        return next();
+    }
+    return authenticateToken(req, res, next);
+});
 
 // --- API Routes ---
 
@@ -128,12 +136,18 @@ app.post('/api/auth/register', (req, res) => {
     if (!name || !email || !password) {
         return res.status(400).json({ error: "Name, email and password are required" });
     }
+    if (password.length < 6 && !/^[a-f0-9]{64}$/i.test(password)) {
+        return res.status(400).json({ error: "Password must be at least 6 characters" });
+    }
     
     let passHash = password;
     if (!/^[a-f0-9]{64}$/i.test(password)) {
         passHash = hashPassword(password);
     }
-    const userRole = role || 'member';
+    // Prevent role escalation by default. If a normal user registers, force 'member'.
+    // In a real system, you'd check req.user.role here if it was authenticated.
+    // For this prototype, we'll allow 'admin' ONLY IF customId is provided for the very first gym admin.
+    const userRole = (role === 'admin' && customId) ? 'admin' : 'member';
 
     db.run("INSERT INTO users (customId, name, email, password, role) VALUES (?, ?, ?, ?, ?)", 
         [customId, name, email, passHash, userRole], function(err) {
@@ -155,7 +169,19 @@ app.get('/api/members', (req, res) => {
             console.error("Get Members Error:", err);
             return res.status(500).json({ error: "Internal server error" });
         }
-        res.json(rows.map(sanitizeUser));
+        const today = new Date();
+        const updatedRows = rows.map(row => {
+            const user = sanitizeUser(row);
+            // Check expiry
+            if (user.membershipEnd) {
+                const endDate = new Date(user.membershipEnd);
+                if (endDate < today) {
+                    user.membershipStatus = 'Expired';
+                }
+            }
+            return user;
+        });
+        res.json(updatedRows);
     });
 });
 

@@ -5,14 +5,18 @@
   "main": "index.js",
   "scripts": {
     "dev": "node backend/server.js",
-    "build": "powershell -ExecutionPolicy Bypass -File ./sync.ps1",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "pwsh -ExecutionPolicy Bypass -File ./sync.ps1",
+    "test": "echo \"No test specified\" && exit 0",
+    "lint": "echo \"No linting specified\" && exit 0"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",

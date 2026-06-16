@@ -1,7 +1,7 @@
 {
-  "name": "Dragon Gym Unified Portal",
-  "short_name": "Dragon Gym",
-  "description": "Cross-platform mobile and desktop application for Dragon Gym Slot Booking, Attendance, and Machine Management",
+  "name": "FitNex AI Unified Portal",
+  "short_name": "FitNex AI",
+  "description": "Cross-platform mobile and desktop application for FitNex AI Slot Booking, Attendance, and Machine Management",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -10,7 +10,7 @@
   "categories": ["fitness", "sports", "productivity"],
   "icons": [
     {
-      "src": "dragon_gym_icon.png",
+      "src": "fitnex_logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

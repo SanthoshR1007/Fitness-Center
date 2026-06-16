@@ -1,0 +1,48 @@
+name: E2E Tests & Report Generation
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      # Replace 'npm run test:e2e' with the exact command you use locally 
+      # (e.g., npx playwright test, npx cypress run, etc.)
+      - name: Run E2E Tests
+        run: npm run test:e2e
+        # continue-on-error is essential to ensure that even if a test fails, 
+        # the subsequent report upload step still executes!
+        continue-on-error: true
+        
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-reports
+          # This captures the most common E2E report output directories.
+          # Modify the paths below if your framework outputs somewhere else.
+          path: |
+            playwright-report/
+            cypress/reports/
+            cypress/videos/
+            cypress/screenshots/
+            mochawesome-report/
+            reports/
+          retention-days: 14

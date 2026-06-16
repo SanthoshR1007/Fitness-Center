@@ -1,0 +1,19 @@
+{
+  "name": "Dragon Gym Unified Portal",
+  "short_name": "Dragon Gym",
+  "description": "Cross-platform mobile and desktop application for Dragon Gym Slot Booking, Attendance, and Machine Management",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0a0b10",
+  "theme_color": "#ff3e3e",
+  "categories": ["fitness", "sports", "productivity"],
+  "icons": [
+    {
+      "src": "dragon_gym_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

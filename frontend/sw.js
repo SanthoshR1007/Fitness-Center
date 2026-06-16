@@ -4,7 +4,7 @@ const ASSETS = [
   './branding.js',
   './gym_login_bg.png',
   './gym_dashboard_bg.png',
-  './dragon_gym_icon.png',
+  './fitnex_logo.png',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap',
   'https://unpkg.com/lucide@latest',

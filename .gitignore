@@ -22,3 +22,6 @@ Desktop.ini
 
 # Distribution
 /dist
+
+# Node
+node_modules/
